@@ -1,0 +1,65 @@
+load("@com_github_mvukov_rules_ros2//ros2:cc_defs.bzl", "ros2_cpp_library")
+load(
+    "@com_github_mvukov_rules_ros2//ros2:interfaces.bzl",
+    "cpp_ros2_interface_library",
+    "ros2_interface_library",
+)
+
+ros2_interface_library(
+    name = "example_msg",
+    srcs = [
+        "Example.msg",
+    ],
+)
+
+ros2_interface_library(
+    name = "example_srv",
+    srcs = [
+        "Example.srv",
+    ],
+    deps = [
+        ":example_msg",
+    ],
+)
+
+ros2_interface_library(
+    name = "example_action",
+    srcs = [
+        "Example.action",
+    ],
+    deps = [
+        ":example_msg",
+        "@ros2_rcl_interfaces//:action_msgs",
+    ],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_example_srv",
+    deps = [":example_srv"],
+)
+
+cpp_ros2_interface_library(
+    name = "cpp_example_action",
+    deps = [":example_action"],
+)
+
+ros2_cpp_library(
+    name = "example_srv_lib",
+    srcs = [
+        "example_srv.cpp",
+    ],
+    deps = [
+        ":cpp_example_srv",
+        "@ros2_rclcpp//:rclcpp",
+    ],
+)
+
+ros2_cpp_library(
+    name = "example_action_lib",
+    srcs = ["example_action.cpp"],
+    deps = [
+        ":cpp_example_action",
+        "@ros2_rclcpp//:rclcpp",
+        "@ros2_rclcpp//:rclcpp_action",
+    ],
+)
